@@ -1,8 +1,8 @@
 ﻿# etl-imoveis-br
 
 Pipeline ETL completo para analise do mercado de aluguel de imoveis no Brasil.
-Roda 100% local sem banco de dados - apenas Python e as libs do requirements.txt.
-O carregamento no PostgreSQL e opcional e esta documentado abaixo.
+Roda 100% local sem banco de dados. Apenas Python e as libs do requirements.txt.
+O carregamento no PostgreSQL é opcional e esta documentado abaixo.
 
 ---
 
