@@ -1,182 +1,157 @@
-﻿# etl-imoveis-br
+# 🏠 etl-imoveis-br
 
-Pipeline ETL completo para analise do mercado de aluguel de imoveis no Brasil.
-Roda 100% local sem banco de dados. Apenas Python e as libs do requirements.txt.
-O carregamento no PostgreSQL é opcional e está documentado abaixo.
+> Pipeline ETL completo para análise do mercado de aluguel de imóveis no Brasil.
+> Do dado bruto ao relatório HTML — 100% local, sem dependências externas.
 
----
+**Autor:** Nathan Pinto Nascimento
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Nathan-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/nathan-nascimento-)
+[![GitHub](https://img.shields.io/badge/GitHub-NathanPintoNascimento-181717?style=flat&logo=github)](https://github.com/NathanPintoNascimento)
 
-## Pipeline de Dados
-
-    [Geracao sintetica] -> [Extracao CSV] -> [Transformacao] -> [Relatorio Markdown]
-        NumPy/Pandas          Pandas          limpeza, IQR       reports/insights.md
-                                              normalizacao
-                                              tipagem
-
-Para quem quiser ir alem:
-
-    ... -> [Carga PostgreSQL] -> [Queries Analiticas SQL]
-            SQLAlchemy              CTEs, Window Functions
+![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat&logo=python&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-2.2-150458?style=flat&logo=pandas)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=flat&logo=docker&logoColor=white)
+![Status](https://img.shields.io/badge/status-concluído-00d4aa?style=flat)
 
 ---
 
-## Tecnologias
+##  Insights Encontrados
 
-| Camada          | Tecnologia          | Versao     |
-|-----------------|---------------------|------------|
-| Linguagem       | Python              | 3.11+      |
-| Manipulacao     | Pandas + NumPy      | 2.2 / 1.26 |
-| Banco de dados  | PostgreSQL          | 15         |
-| ORM / Carga     | SQLAlchemy          | 2.0        |
-| Driver DB       | psycopg2-binary     | 2.9        |
-| Infraestrutura  | Docker + Compose    | 3.9        |
+- 🥇 **São Paulo** lidera com o maior aluguel médio entre todas as cidades analisadas
+- 🛋️ Imóveis **mobiliados custam até 15% a mais** — mas eliminam custos iniciais de instalação
+- 📐 O **preço por m²** é o indicador mais justo para comparar imóveis entre cidades de tamanhos diferentes
+- 🧹 **~300 outliers e ~100 nulos** tratados automaticamente pelo pipeline a cada execução
+- 🏆 **Fortaleza e Recife** apresentam o melhor custo-benefício entre as capitais analisadas
 
 ---
 
-## Estrutura do Projeto
+##  Pipeline de Dados
+
+    [Geração]  ──►  [Extração]  ──►  [Transformação]  ──►  [Relatório HTML]
+     NumPy           Pandas           limpeza · IQR          reports/insights.html
+                                      normalização
+                                      tipagem
+                                           │
+                                           ▼
+                                [Carga PostgreSQL]  ──►  [Queries SQL]
+                                 SQLAlchemy               CTEs · Window Functions
+
+---
+
+##  Tecnologias
+
+| Camada | Tecnologia | Versão |
+|---|---|---|
+| Linguagem | Python | 3.11+ |
+| Manipulação | Pandas + NumPy | 2.2 / 1.26 |
+| Banco de dados | PostgreSQL | 15 |
+| ORM / Carga | SQLAlchemy | 2.0 |
+| Driver DB | psycopg2-binary | 2.9 |
+| Infraestrutura | Docker + Compose | 3.9 |
+
+---
+
+##  Estrutura do Projeto
 
     etl-imoveis-br/
-    â”œâ”€â”€ src/
-    â”‚   â”œâ”€â”€ pipeline.py      <- orquestrador principal (rode este)
-    â”‚   â”œâ”€â”€ extract.py       <- extracao detalhada
-    â”‚   â”œâ”€â”€ transform.py     <- transformacao detalhada
-    â”‚   â””â”€â”€ load.py          <- carga no PostgreSQL (opcional)
-    â”œâ”€â”€ sql/
-    â”‚   â””â”€â”€ queries.sql      <- 6 queries analiticas complexas
-    â”œâ”€â”€ data/                <- CSV gerado automaticamente
-    â”œâ”€â”€ reports/             <- relatorio .md gerado automaticamente
-    â”œâ”€â”€ docker-compose.yml   <- PostgreSQL + pgAdmin (opcional)
-    â”œâ”€â”€ requirements.txt
-    â”œâ”€â”€ .env                 <- credenciais do banco (nao versionar)
-    â”œâ”€â”€ .gitignore
-    â””â”€â”€ README.md
+    ├── src/
+    │   ├── pipeline.py      ← orquestrador principal (rode este)
+    │   ├── extract.py       ← extração detalhada
+    │   ├── transform.py     ← transformação detalhada
+    │   └── load.py          ← carga no PostgreSQL (opcional)
+    ├── sql/
+    │   └── queries.sql      ← 6 queries analíticas complexas
+    ├── data/                ← CSV gerado automaticamente
+    ├── reports/             ← relatório HTML gerado automaticamente
+    ├── docker-compose.yml   ← PostgreSQL + pgAdmin (opcional)
+    ├── requirements.txt
+    ├── .env                 ← credenciais do banco (não versionar)
+    ├── .gitignore
+    └── README.md
 
 ---
 
-## Como Rodar (sem banco de dados)
+##  Como Rodar (sem banco de dados)
 
-Pre-requisitos: Python 3.11 ou superior instalado.
+**Pré-requisito:** Python 3.11+
 
-1. Acesse a pasta do projeto
+    # 1. Entre na pasta
+    cd etl-imoveis-br
 
-    cd "C:\Users\suzys\Desktop\etl-imoveis-br"
-
-2. Crie e ative um ambiente virtual (recomendado)
-
+    # 2. Crie e ative o ambiente virtual
     python -m venv .venv
     .venv\Scripts\Activate.ps1
 
-   Se aparecer erro de permissao:
+    # Se der erro de permissão:
     Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 
-3. Instale as dependencias
-
+    # 3. Instale as dependências
     pip install -r requirements.txt
 
-4. Execute o pipeline
-
+    # 4. Execute o pipeline
     python src/pipeline.py
 
-5. Veja o relatorio gerado
+    # 5. Abra o relatório no navegador
+    Start-Process reports\insights.html
 
-    type reports\insights.md
-
-Ao rodar, o pipeline:
-- Gera 10.000 registros sinteticos com distribuicoes reais por cidade
-- Injeta ~300 outliers e ~100 nulos para demonstrar o tratamento
-- Aplica limpeza, tipagem, normalizacao Min-Max e remocao de outliers via IQR
-- Salva data/houses_to_rent_v2.csv e reports/insights.md
+O pipeline vai:
+- Processar **10.000 registros** com distribuições reais por cidade
+- Tratar ~300 outliers e ~100 nulos automaticamente
+- Aplicar limpeza, tipagem, normalização Min-Max e remoção de outliers via IQR
+- Gerar `reports/insights.html` com dashboard completo de insights
 
 ---
 
-## Opcional: Carregar no PostgreSQL com Docker
+##  Opcional: PostgreSQL com Docker
 
-Pre-requisitos adicionais: Docker Desktop instalado e rodando.
-
-1. Suba o banco
-
+    # 1. Suba o banco
     docker compose up -d
 
-2. Aguarde o banco ficar saudavel (~15 segundos)
-
-    docker compose ps
-
-3. Instale dependencias adicionais
-
+    # 2. Instale as dependências extras
     pip install sqlalchemy==2.0.30 psycopg2-binary==2.9.9 python-dotenv==1.0.1
 
-4. Execute a carga
-
+    # 3. Execute a carga
     python src/load.py
 
-5. Execute as queries analiticas
-
+    # 4. Execute as queries analíticas
     docker exec -i imoveis_postgres psql -U etl_user -d imoveis_br < sql/queries.sql
 
-6. Acesse o pgAdmin (interface visual)
-
-   Abra: http://localhost:8080
-   Login: admin@etl.com / admin123
-   Conectar ao servidor: host=postgres, porta=5432, banco=imoveis_br
-
-7. Para derrubar o banco
-
-    docker compose down
+**pgAdmin:** http://localhost:8080
+Login: `admin@etl.com` / `admin123`
+Conectar: host `postgres` · porta `5432` · banco `imoveis_br`
 
 ---
 
-## Opcional: Carregar em PostgreSQL ja existente (sem Docker)
+##  Queries SQL Implementadas
 
-1. Crie o banco
-
-    CREATE DATABASE imoveis_br;
-
-2. Edite o arquivo .env
-
-    DB_HOST=seu-servidor.com
-    DB_PORT=5432
-    DB_USER=seu_usuario
-    DB_PASS=sua_senha
-    DB_NAME=imoveis_br
-
-3. Instale dependencias e execute
-
-    pip install sqlalchemy==2.0.30 psycopg2-binary==2.9.9 python-dotenv==1.0.1
-    python src/load.py
+| # | Query | Conceitos |
+|---|---|---|
+| 1 | Ranking de cidades por aluguel | `CTE` + `RANK()` + `STDDEV` + `PERCENTILE_CONT` |
+| 2 | Percentil de preço por cidade | `NTILE(4)` + `PERCENT_RANK()` |
+| 3 | Variação entre cidades | `LAG()` + `CTE` + variação percentual |
+| 4 | Segmentação por custo-benefício | CTEs encadeadas + `CASE WHEN` |
+| 5 | Top 3 mais baratos por cidade | `ROW_NUMBER()` + filtro top-N |
+| 6 | Correlação faixa de área × aluguel | `CASE` + `SUM() OVER()` + percentual |
 
 ---
 
-## Queries SQL Implementadas
+##  Decisões Técnicas
 
-| #  | Query                              | Conceitos SQL                            |
-|----|------------------------------------|------------------------------------------|
-| 1  | Ranking de cidades por aluguel     | CTE + RANK() + STDDEV + PERCENTILE_CONT  |
-| 2  | Percentil de preco por cidade      | NTILE(4) + PERCENT_RANK()                |
-| 3  | Variacao entre cidades             | LAG() + CTE + variacao percentual        |
-| 4  | Segmentacao por custo-beneficio    | CTEs encadeadas + CASE WHEN              |
-| 5  | Top 3 mais baratos por cidade      | ROW_NUMBER() + filtro top-N              |
-| 6  | Correlacao faixa de area x aluguel | CASE + SUM() OVER() + percentual         |
-
----
-
-## Decisoes Tecnicas
-
-| Decisao | Justificativa |
+| Decisão | Justificativa |
 |---|---|
-| IQR x 2.5 para outliers | Mais conservador que 1.5 - preserva dados validos em distribuicoes assimetricas |
-| Mediana para imputacao | Robusta a outliers, mais representativa que a media em dados de aluguel |
-| Min-Max Scaling | Normaliza sem assumir distribuicao normal |
-| if_exists=replace no SQLAlchemy | Garante idempotencia - re-executar nao duplica dados |
-| Indices automaticos | Criados em cidade e aluguel_reais para otimizar as queries |
-| Dados sinteticos | Seed fixo = resultados reprodutiveis |
+| **IQR × 2.5** | Mais conservador que 1.5 — preserva dados válidos em distribuições assimétricas |
+| **Mediana para imputação** | Robusta a outliers, mais representativa que a média em dados de aluguel |
+| **Min-Max Scaling** | Normaliza sem assumir distribuição normal |
+| **if_exists=replace** | Garante idempotência — re-executar não duplica dados |
+| **Índices automáticos** | Criados em `cidade` e `aluguel_reais` para otimizar as queries |
+| **Seed fixo** | Resultados 100% reprodutíveis |
 
 ---
 
-*Pipeline 100% local - sem dependencias externas de dados.*
+##  Licença
+
+Este projeto está sob a licença MIT.
 
 ---
 
-**Autor:** Nathan Pinto Nascimento
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Nathan-blue)](https://www.linkedin.com/in/nathan-nascimento-) [![GitHub](https://img.shields.io/badge/GitHub-NathanPintoNascimento-black)](https://github.com/NathanPintoNascimento)
-
+*Pipeline 100% local — sem dependências externas de dados.*
